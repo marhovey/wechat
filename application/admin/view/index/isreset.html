@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>重置密码</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<body>
+	<style>
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	.login{
+		width: 420px;
+		height: auto;
+	}
+	.ipt{
+		line-height: 60px;
+		font-size: 18px;
+	}
+	.ipt input{
+		width: 300px;
+		height: 40px;
+		padding: 0 10px;
+		font-size: 18px;
+	}
+	.verify input{
+		width: 100px;
+		margin-right: 10px;
+	}
+	.verify img{
+		float: right;
+		margin-top: 15px;
+	}
+	.subm input{
+		width: 400px;
+		height: 40px;
+		font-size: 20px;
+		letter-spacing: 10px;
+		background-color: #38f;
+		color: #fff;
+		border: none;
+		outline: none;
+		border-radius: 20px;
+	}
+</style>
+	<?php if(isset($name)){ ?>
+	<p>欢迎您：{$name}</p>
+	<div class="login">
+		<form action="" id="fom">
+			<p class="ipt"><input type="hidden" name="username" id="username" value="{$name}"></p>
+			<p class="ipt"><label for="password">新密码　：</label><input type="password" name="password" id="password" placeholder="请输入新密码"></p>
+			<p class="ipt"><label for="repassword">再输一次：</label><input type="password" name="repassword" id="repassword" placeholder="请再次输入密码"></p>
+			<p class="subm"><input type="button" id="submit" value="找回"></p>
+			<p id="msg" style="color: red"></p>
+		</form>
+	</div>
+	<script>
+		$("#submit").on('click',function(){$.post('/myownwechat/public/index.php/admin/index/reset',$("#fom").serialize(),function(data){if(data=="ok"){window.location.href="/myownwechat/public/index.php/admin/"}});})
+	</script>
+	<?php } ?>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Sign Up</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<body>
+<style>
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	.login{
+		width: 420px;
+		height: auto;
+	}
+	.ipt{
+		line-height: 60px;
+		font-size: 18px;
+	}
+	.ipt input{
+		width: 300px;
+		height: 40px;
+		padding: 0 10px;
+		font-size: 18px;
+	}
+	.verify input{
+		width: 100px;
+		margin-right: 10px;
+	}
+	.verify img{
+		float: right;
+		margin-top: 15px;
+	}
+	.subm input{
+		width: 400px;
+		height: 40px;
+		font-size: 20px;
+		letter-spacing: 10px;
+		background-color: #38f;
+		color: #fff;
+		border: none;
+		outline: none;
+		border-radius: 20px;
+	}
+</style>
+	<div class="login">
+		<form action="" id="fom">
+			<p class="ipt"><label for="username">用户名　 ：</label><input type="text" name="username" id="username" placeholder="请输入用户名"></p>
+			<p class="ipt"><label for="password">密　码　 ：</label><input type="password" name="password" id="password" placeholder="请输入密码"></p>
+			<p class="ipt"><label for="repassword">密　码　 ：</label><input type="password" name="repassword" id="repassword" placeholder="请再次输入密码"></p>
+			<p class="ipt"><label for="email">邮　箱　 ：</label><input type="email" name="email" id="email" placeholder="请输入邮箱"></p>
+			<p class="ipt"><label for="appid">APPID　 ：</label><input type="text" name="appid" id="appid" placeholder="请输入appid"></p>
+			<p class="ipt"><label for="appsert">APPSERT：</label><input type="text" name="appsert" id="appsert" placeholder="请输入appsert"></p>
+			<p class="subm"><input type="button" id="submit" value="注册"></p>
+			<p id="msg" style="color: red"></p>
+		</form>
+	</div>
+	<script>
+	$("#submit").on('click',function(){
+		$.post('/myownwechat/public/index.php/admin/Signup',$("#fom").serialize(),function(data){if(data=="ok"){alert('注册成功，3秒后跳转到主页');setTimeout(function(){window.location.href="/myownwechat/public/index.php/admin/MyHome"},3000)}else{alert(data);}});
+	})
+	$("#username").on('keyup',function(){
+		$.post('/myownwechat/public/index.php/admin/Signup',$("#fom").serialize(),function(data){if(data=="用户名已存在"){$("#msg").html(data);$("#msg").css({display: "block"})}else{$("#msg").css({display: "none"})}});
+	})
+	$("#repassword").on('keyup',function(){
+		if($("#repassword").val() != $("#password").val()){
+			$("#msg").html('两次密码不一致');
+			$("#msg").css({display:"block"})
+		}else{
+			$("#msg").css({display: "none"})
+		}
+	})
+	$("#email").on('keyup',function(){
+		var patt = /^([a-zA-Z0-9])+@([a-zA-Z0-9])+(.[a-zA-Z0-9])/g;
+		if(!patt.test($("#email").val())){
+			$("#msg").html('邮箱格式错误');
+			$("#msg").css({display:"block"})
+		}else{
+			$("#msg").css({display: "none"})
+		}
+	})
+	</script>
+</body>
+</html>

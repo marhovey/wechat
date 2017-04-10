@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Aprill Fool's Day</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+	<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<body>
+<style>
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	#desc_wrapper{
+		display: none;
+		opacity: 0;
+		width: 100%;
+		height: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: rgba(0,0,0,.6);
+	}
+	#description{
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+	.button{
+		color: #fff;
+		background-color: #38f;
+		border: none;
+		outline: none;
+		width: 50px;
+		height: 30px;
+		padding: 5px 10px;
+		box-sizing: content-box;
+		line-height: 30px;
+		font-size: 20px;
+		-webkit-appearance: none;
+	}
+</style>
+	<div>
+		<?php if(isset($info_name)){?>
+			<p>昵称：{$info_name}</p>
+			<p style="line-height: 50px;height: 50px;"><b style="font-weight: normal;float: left;">头像：</b><img style="float: left;border-radius: 50%" width="50" height="50" src="{$info_img}" alt="{$info_name}"></p>
+			<?php if(isset($desc)){ if($desc == "随随便便分享吧---测试ing") {?>
+				<p id="describe">宣言：您的个人宣言未填写</p>
+			<?php } else {?>
+				<p id="describe">宣言：{$desc}&nbsp;&nbsp;&nbsp;&nbsp;修改</p>
+			<?php }}?>
+			<script type="text/javascript">
+				$("#describe").on('click',function(){
+					$("#desc_wrapper").css({display: 'block',opacity: 1});
+				})
+			</script>
+			<div id="desc_wrapper">
+				<div class="description">
+					<textarea style="width: 100%;resize: none;" name="" id="desc" cols="30" rows="10">{$desc}</textarea>
+					<div id="button">
+						<input id="save" class="button" type="button" value="保存" />
+						<input id="cancel" class="button" type="button" value="取消" />
+					</div>
+				</div>
+			</div>
+			<script>
+				$("#save").on('click',function(){
+					$.post("/myownwechat/public/index.php/index/Share/updateDesc", {'wecha_id': '{$wecha_id}','desc':$("#desc").val()},function(){});
+					setTimeout(function(){
+						window.location.reload();
+					},1000);
+				});
+				$("#cancel").on('click',function(){
+					$("#desc_wrapper").css({display: 'none',opacity: 0});
+				})
+			</script>
+		<?php }?>
+		<?php if(isset($lst)) {?>
+			<?php foreach($lst as $key=>$value) { ?>
+				<p style="line-height: 50px;margin-bottom: 5px">{$value['id']}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$value['name']}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$value['share_cont']}<img style="float: right;margin-right: 20px;border-radius: 50%" width="50" height="50" src="{$value['img']}" alt=""></p>
+			<?php }?>
+		<?php }?>
+	</div>
+</body>
+<?php if(isset($skip)) { ?>
+	<script>
+		window.location.href='{$url}';
+	</script>
+<?php }?>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+	var SHARE_MARK='';//分享标识
+	var SELF_MARK='';//用户标识
+	var shareAppMessageOpts,shareQQOpts,shareQZoneOpts,shareTimelineOpts,shareWeiboOpts;
+		wx.config({
+		  debug: false,
+		  appId: 'wxb52625b5332abeac',
+		  timestamp: '{$timestamp}',
+		  nonceStr: '{$nonceStr}',
+		  signature: '{$signature}',
+		  jsApiList: [
+	    	'checkJsApi',
+		    'onMenuShareTimeline',
+		    'onMenuShareAppMessage',
+		    'onMenuShareQQ',
+		    'onMenuShareWeibo',
+			'openLocation',
+			'getLocation',
+			'addCard',
+			'chooseCard',
+			'openCard',
+			'hideMenuItems',
+			'previewImage',
+            "startRecord", 
+            "stopRecord", 
+            "onVoiceRecordEnd", 
+            "playVoice", 
+            "pauseVoice",
+            "stopVoice", 
+            "onVoicePlayEnd", 
+            "uploadVoice", 
+            "downloadVoice",
+             "closeWindow",
+             "getNetworkType"
+		  ]
+		});
+</script>
+<script type="text/javascript">
+	wx.ready(function () {
+	   wx.showOptionMenu();
+	  // 2. 分享接口
+	  // 2.1 监听“分享给朋友”，按钮点击、自定义分享内容及分享结果接口
+	  shareAppMessageOpts={
+			title: '谢谢您的分享',
+			desc: '{$desc}',
+			link: 'http://wx.rojewel.com/myownwechat/public',
+			imgUrl: '{$info_img}',
+		    type: '', // 分享类型,music、video或link，不填默认为link
+		    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+		    success: function () { 
+		    	sharenum('frend');
+		    	// alert('分享朋友成功');
+		    },
+		    cancel: function () { 
+		        alert('分享朋友失败');
+		    }
+		};
+	    wx.onMenuShareAppMessage(shareAppMessageOpts);
+		
+		//获取“分享到QQ”按钮点击状态及自定义分享内容接口
+		shareQQOpts={
+			title: '谢谢您的分享',
+			desc: '{$desc}',
+			link: 'http://wx.rojewel.com/myownwechat/public',
+			imgUrl: '{$info_img}',
+		    success: function () { 
+		    	sharenum('QQ');
+		    	// alert('分享到QQ成功');
+		    },
+		    cancel: function () { 
+		        alert('分享到QQ失败');
+		    }
+		};
+		wx.onMenuShareQQ(shareQQOpts);
+		
+		//获取“分享到QQ空间”按钮点击状态及自定义分享内容接口
+		shareQZoneOpts={
+			title: '谢谢您的分享',
+			desc: '{$desc}',
+			link: 'http://wx.rojewel.com/myownwechat/public',
+			imgUrl: '{$info_img}',
+		    success: function () { 
+		    	sharenum('Q-zone');
+		    	// alert('分享到QQ空间成功');
+		    },
+		    cancel: function () { 
+		        alert('分享到QQ空间失败');
+		    }
+		};
+		wx.onMenuShareQZone(shareQZoneOpts);
+		
+		
+	  // 2.2 监听“分享到朋友圈”按钮点击、自定义分享内容及分享结果接口
+	  shareTimelineOpts={
+			title: '谢谢您的分享',
+			desc: '{$desc}',
+			link: 'http://wx.rojewel.com/myownwechat/public',
+			imgUrl: '{$info_img}',
+		    success: function () { 
+		    	sharenum('frends');
+		        // alert('分享朋友圈成功');
+		    },
+		    cancel: function () { 
+		        alert('分享朋友圈失败');
+		    }
+		};
+		wx.onMenuShareTimeline(shareTimelineOpts);	
+
+	  // 2.4 监听“分享到微博”按钮点击、自定义分享内容及分享结果接口
+	  shareWeiboOpts={
+			title: '谢谢您的分享',
+			desc: '{$desc}',
+			link: 'http://wx.rojewel.com/myownwechat/public',
+			imgUrl: '{$info_img}',
+		    success: function () {
+		    	sharenum('weibo');
+		       	// alert('分享微博成功');
+		    },
+		    cancel: function () { 
+		        alert('分享微博失败');
+		    }
+		};
+		wx.error(function (res) {
+			if(res.errMsg){
+				wx.hideOptionMenu();
+			}
+		});
+	});
+	function sharenum(to) {
+		var subData = {
+			'name': '{$info_name}',
+			'img': '{$info_img}',
+			'wecha_id': '{$wecha_id}',
+			'to': to
+		}
+		$.post('/myownwechat/public/index.php/index/Share',subData,function(){});
+	}
+</script>
+</html>
